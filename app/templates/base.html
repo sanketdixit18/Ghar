@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Real Estate Price Prediction System{% endblock %}</title>
+  <meta name="description" content="ML-powered real estate price prediction, analytics, and recommendations." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a href="/" class="brand">
+          <span class="brand-mark">🏠</span>
+          <span>Real Estate <span class="font-mono" style="opacity:.55;font-weight:500;">AI</span></span>
+        </a>
+        <nav class="topbar-actions">
+          <button class="theme-toggle" id="themeToggle" title="Toggle dark / light" aria-label="Toggle theme">
+            <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+          </button>
+          <a href="/docs" class="btn btn-ghost btn-sm"><i class="bi bi-code-slash"></i>&nbsp;API</a>
+        </nav>
+      </div>
+    </header>
+
+    <main style="flex:1;">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container-xl">
+        Built with FastAPI · Scikit-learn · Plotly &nbsp;·&nbsp; © 2026 Real Estate Price Prediction System
+      </div>
+    </footer>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

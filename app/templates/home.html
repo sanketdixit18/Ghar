@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Real Estate Price Prediction System{% endblock %}
+
+{% block content %}
+<div class="container-xl">
+
+  <section class="hero">
+    <div class="hero-orb"></div>
+    <svg class="skyline" width="420" height="220" viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skylineGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#7c6ff2" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#22d3ee" stop-opacity="0.05"/>
+        </linearGradient>
+      </defs>
+      <rect x="10"  y="90"  width="34" height="130"/>
+      <rect x="54"  y="50"  width="28" height="170"/>
+      <rect x="92"  y="120" width="30" height="100"/>
+      <rect x="132" y="20"  width="36" height="200"/>
+      <rect x="178" y="70"  width="26" height="150"/>
+      <rect x="214" y="100" width="32" height="120"/>
+      <rect x="256" y="40"  width="30" height="180"/>
+      <rect x="296" y="130" width="28" height="90"/>
+      <rect x="334" y="80"  width="34" height="140"/>
+      <rect x="378" y="110" width="26" height="110"/>
+    </svg>
+
+    <span class="hero-eyebrow"><i class="bi bi-stars"></i>&nbsp; ML-Powered Property Intelligence</span>
+    <h1>Estimate real&nbsp;estate<br/><span class="grad">prices with confidence.</span></h1>
+    <p class="lead">{{ app_description }}</p>
+
+    <div class="hero-actions">
+      {% if active_city_names %}
+      <a href="/{% if cities %}#markets{% endif %}" class="btn btn-primary"><i class="bi bi-graph-up-arrow"></i>&nbsp; Explore city</a>
+      {% endif %}
+      <a href="/docs" class="btn btn-ghost"><i class="bi bi-terminal"></i>&nbsp; View API Docs</a>
+    </div>
+
+    <div class="badge-row">
+      <span class="badge">🐍 Python</span>
+      <span class="badge">⚡ FastAPI</span>
+      <span class="badge">📊 Scikit-learn</span>
+      <span class="badge">🧮 Pandas / NumPy</span>
+      <span class="badge">📈 Plotly</span>
+    </div>
+  </section>
+
+  <div class="metrics-grid">
+    {% for m in metrics %}
+    <div class="glass-card metric-card">
+      <div class="metric-value">{{ m.value }}</div>
+      <div class="metric-label">{{ m.label }}</div>
+    </div>
+    {% endfor %}
+    <div class="glass-card metric-card">
+      <div class="metric-value">{{ cities_covered }}</div>
+      <div class="metric-label">Cities Covered</div>
+    </div>
+  </div>
+
+  <div class="section-head" id="markets">
+    <h2>🌍 Supported Markets</h2>
+    <span class="sub">Add a city by dropping a folder in <code class="font-mono">/models</code> — no code changes.</span>
+  </div>
+
+  {% set active_cities = cities | selectattr("status", "equalto", "active") | list %}
+  <div class="glass-card markets-card">
+    <p class="markets-desc">
+      Select a city to explore its complete real estate dashboard including prediction, analytics, recommendations, maps, and market insights.
+    </p>
+
+    <div class="markets-form">
+      <div class="field">
+        <label for="marketsCitySelect">City</label>
+        <select id="marketsCitySelect" {% if not active_cities %}disabled{% endif %}>
+          {% for city in active_cities %}
+          <option value="{{ city.slug }}">{{ city.emoji or "🏙️" }} {{ city.city }}</option>
+          {% else %}
+          <option value="">No cities available yet</option>
+          {% endfor %}
+        </select>
+      </div>
+      <a href="/prediction{% if active_cities %}?city={{ active_cities[0].slug }}{% endif %}"
+         class="btn btn-primary" id="marketsOpenBtn">
+        <i class="bi bi-house-door"></i>&nbsp; Open Dashboard
+      </a>
+    </div>
+
+    <p class="markets-note"><i class="bi bi-info-circle"></i>&nbsp; This application automatically detects all available cities from the models directory.</p>
+  </div>
+
+  <script>
+    (function () {
+      var select = document.getElementById("marketsCitySelect");
+      var btn = document.getElementById("marketsOpenBtn");
+      if (!select || !btn) return;
+      function syncHref() {
+        if (select.value) {
+          btn.setAttribute("href", "/prediction?city=" + encodeURIComponent(select.value));
+        }
+      }
+      select.addEventListener("change", syncHref);
+      syncHref();
+    })();
+  </script>
+
+  <div class="section-head">
+    <h2>🧠 What This Project Demonstrates</h2>
+  </div>
+  <div class="feature-grid">
+    <div class="glass-card feature-box">
+      <b>Data Cleaning &amp; Preprocessing</b>
+      <span>Handling missing values, outliers, and inconsistent listing formats.</span>
+    </div>
+    <div class="glass-card feature-box">
+      <b>Feature Engineering</b>
+      <span>Deriving price-per-sqft, locality encodings, and property-age features.</span>
+    </div>
+    <div class="glass-card feature-box">
+      <b>Exploratory Data Analysis</b>
+      <span>Visualizing price distribution, correlation heatmaps, and locality trends.</span>
+    </div>
+    <div class="glass-card feature-box">
+      <b>Model Building &amp; Tuning</b>
+      <span>Comparing regression models with cross-validation and grid search.</span>
+    </div>
+    <div class="glass-card feature-box">
+      <b>Interactive Prediction UI</b>
+      <span>Real-time price estimation from user-selected property attributes.</span>
+    </div>
+    <div class="glass-card feature-box">
+      <b>Production-Ready Deployment</b>
+      <span>Packaged as a modular FastAPI application, ready to scale to new cities.</span>
+    </div>
+  </div>
+
+  <div class="glass-card dev-card">
+    <div>
+      <h3>👋 Built by {{ author }}</h3>
+      <p>Computer Engineering student (Data Science) — building applied ML projects focused on real-world, structured data problems.</p>
+    </div>
+    <div class="dev-links">
+      <a href="{{ linkedin_url }}" target="_blank" class="btn btn-ghost btn-sm"><i class="bi bi-linkedin"></i>&nbsp; LinkedIn</a>
+      <a href="{{ github_url }}" target="_blank" class="btn btn-ghost btn-sm"><i class="bi bi-github"></i>&nbsp; GitHub</a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

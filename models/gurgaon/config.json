@@ -1,0 +1,34 @@
+{
+  "city": "Gurgaon",
+  "state": "Haryana",
+  "currency": "\u20b9",
+  "unit": "Cr",
+  "theme": "blue",
+  "emoji": "\ud83c\udfd9\ufe0f",
+  "tag": "Sector-based Model",
+  "status": "active",
+  "description": "Apartments & independent floors \u2022 Sector-wise price prediction \u2022 Property comparison \u2022 Price trend analysis",
+  "pipeline_url": "https://github.com/sanketdixit18/Real-estate-app/releases/download/v1.0/pipeline.pkl",
+  "map_center": { "lat": 28.4595, "lon": 77.0266 },
+  "prediction_inputs": {
+    "property_type": { "type": "select", "label": "Property Type" },
+    "sector": { "type": "select", "label": "Sector" },
+    "bedRoom": { "type": "select", "label": "Bedrooms" },
+    "bathroom": { "type": "select", "label": "Bathrooms" },
+    "balcony": { "type": "select", "label": "Balconies" },
+    "agePossession": { "type": "select", "label": "Property Age" },
+    "built_up_area": { "type": "number", "label": "Built Up Area (sq ft)", "min": 100, "step": 50 },
+    "servant room": { "type": "select", "label": "Servant Room" },
+    "store room": { "type": "select", "label": "Store Room" },
+    "furnishing_type": { "type": "select", "label": "Furnishing" },
+    "luxury_category": { "type": "select", "label": "Luxury Category" },
+    "floor_category": { "type": "select", "label": "Floor Category" }
+  },
+  "features": {
+    "prediction": true,
+    "analytics": true,
+    "recommendation": true,
+    "market_trends": true,
+    "wordcloud": true
+  }
+}

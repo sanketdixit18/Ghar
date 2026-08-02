@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}{{ cfg.city }} · Real Estate Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-xl"
+     id="dashboard"
+     data-city="{{ city_slug }}"
+     data-initial-tab="{{ initial_tab or 'prediction' }}"
+     data-currency="{{ cfg.currency or '₹' }}"
+     data-unit="{{ cfg.unit or 'Cr' }}"
+     data-map-lat="{{ (cfg.map_center or {}).lat or '' }}"
+     data-map-lon="{{ (cfg.map_center or {}).lon or '' }}"
+     data-has-analytics="{{ 'true' if cfg.features.analytics else 'false' }}"
+     data-has-recommendation="{{ 'true' if cfg.features.recommendation else 'false' }}"
+     data-has-market="{{ 'true' if cfg.features.market_trends else 'false' }}"
+     data-has-wordcloud="{{ 'true' if cfg.features.wordcloud else 'false' }}">
+
+  <div class="dash-header">
+    <div class="dash-title">
+      <span class="emoji">{{ cfg.emoji or "🏙️" }}</span>
+      <div>
+        <h1>{{ cfg.city }} Real Estate</h1>
+        <p>{{ cfg.description or "Explore predictions, analytics, and market trends." }}</p>
+      </div>
+    </div>
+    <div class="city-switch">
+      <i class="bi bi-geo-alt"></i>
+      <select id="citySwitchSelect"></select>
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab-btn" data-tab="prediction"><i class="bi bi-magic"></i>&nbsp; Prediction</button>
+    <button class="tab-btn" data-tab="analytics"><i class="bi bi-bar-chart-line"></i>&nbsp; Analytics</button>
+    <button class="tab-btn" data-tab="recommendation"><i class="bi bi-stars"></i>&nbsp; Recommendation</button>
+    <button class="tab-btn" data-tab="market"><i class="bi bi-graph-up"></i>&nbsp; Market Trends</button>
+    <button class="tab-btn" data-tab="locality"><i class="bi bi-map"></i>&nbsp; Locality Explorer</button>
+  </div>
+
+  <!-- ================= PREDICTION ================= -->
+  <section class="tab-panel" id="panel-prediction">
+    <div class="glass-card glass-card-pad">
+      <h2 style="margin-top:0;">🔮 House Price Prediction</h2>
+      <p style="color:var(--text-2);margin-top:-0.4rem;">Fill in the property details below to get an instant estimate.</p>
+      <form id="predictForm" class="form-grid" style="margin-top:1.4rem;"></form>
+      <div style="margin-top:1.6rem;">
+        <button type="submit" form="predictForm" class="btn btn-primary" id="predictBtn">
+          <span id="predictBtnLabel"><i class="bi bi-magic"></i>&nbsp; Predict Price</span>
+        </button>
+      </div>
+    </div>
+    <div id="predictResult" class="predict-result"></div>
+  </section>
+
+  <!-- ================= ANALYTICS ================= -->
+  <section class="tab-panel" id="panel-analytics">
+    <div id="analyticsRoot"></div>
+  </section>
+
+  <!-- ================= RECOMMENDATION ================= -->
+  <section class="tab-panel" id="panel-recommendation">
+    <div class="glass-card glass-card-pad">
+      <h2 style="margin-top:0;">🎯 Property Recommendation</h2>
+      <p style="color:var(--text-2);margin-top:-0.4rem;">Pick a property to find similar listings using our hybrid similarity engine.</p>
+      <div class="form-grid" style="margin-top:1.2rem;max-width:520px;">
+        <div class="field">
+          <label for="recPropertySelect">Property</label>
+          <select id="recPropertySelect"></select>
+        </div>
+      </div>
+      <div style="margin-top:1.4rem;">
+        <button class="btn btn-primary" id="recommendBtn"><i class="bi bi-search"></i>&nbsp; Recommend Similar Properties</button>
+      </div>
+    </div>
+    <div id="recResult" class="rec-grid"></div>
+  </section>
+
+  <!-- ================= MARKET TRENDS ================= -->
+  <section class="tab-panel" id="panel-market">
+    <div id="marketRoot"></div>
+  </section>
+
+  <!-- ================= LOCALITY EXPLORER ================= -->
+  <section class="tab-panel" id="panel-locality">
+    <div class="glass-card glass-card-pad">
+      <h2 style="margin-top:0;">🗺️ Locality Explorer</h2>
+      <div class="notice"><i class="bi bi-cone-striped"></i>&nbsp; Coming soon for {{ cfg.city }}.</div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+<script src="/static/js/prediction.js"></script>
+<script src="/static/js/analytics.js"></script>
+<script src="/static/js/recommendation.js"></script>
+<script src="/static/js/market.js"></script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{
+  "city": "Mumbai",
+  "state": "Maharashtra",
+  "currency": "\u20b9",
+  "unit": "Cr",
+  "theme": "teal",
+  "emoji": "\ud83c\udf06",
+  "tag": "Location-based Model",
+  "status": "active",
+  "description": "Apartments & independent houses \u2022 Location-wise price prediction \u2022 Area (sq. ft.) driven analysis \u2022 Market insight visualizations",
+  "pipeline_url": "https://github.com/sanketdixit18/Real-estate-app/releases/download/v1.1/pipeline.pkl",
+  "map_center": { "lat": 19.076, "lon": 72.8777 },
+  "prediction_inputs": {
+    "area": { "type": "number", "label": "Area (sq ft)", "min": 100, "step": 50 },
+    "locality": { "type": "select", "label": "Locality" },
+    "property_type": { "type": "select", "label": "Property Type" },
+    "bedroom_num": { "type": "select", "label": "Bedrooms" },
+    "bathroom_num": { "type": "select", "label": "Bathrooms" },
+    "balcony_num": { "type": "select", "label": "Balconies" },
+    "furnished": { "type": "select", "label": "Furnished" },
+    "age": { "type": "select", "label": "Property Age" }
+  },
+  "features": {
+    "prediction": true,
+    "analytics": true,
+    "recommendation": false,
+    "market_trends": false,
+    "wordcloud": false
+  }
+}

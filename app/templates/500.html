@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Something Went Wrong{% endblock %}
+{% block content %}
+<div class="container-xl">
+  <div class="error-page">
+    <div class="code">500</div>
+    <h2>Something broke on our end.</h2>
+    <p>Our team has been notified via the error logs. Please try again in a moment.</p>
+    <a href="/" class="btn btn-primary"><i class="bi bi-arrow-left"></i>&nbsp; Back to Home</a>
+  </div>
+</div>
+{% endblock %}
