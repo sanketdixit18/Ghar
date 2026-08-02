@@ -242,18 +242,13 @@ class CityManager:
             return assets.market_df
 
     def warm_up(self) -> None:
-    """
-    Startup should ONLY discover cities.
-
-    Do not load any dataframe, model or recommendation assets.
-    Everything will be loaded lazily on first request.
-    """
-    self.discover_cities()
-    logger.info(
-        "Discovered %d cities: %s",
-        len(self._configs),
-        ", ".join(self._configs.keys())
-    )
+        
+        self.discover_cities()
+        logger.info(
+            "Discovered %d cities: %s",
+            len(self._configs),
+            ", ".join(self._configs.keys())
+        )
 
 
 # Module-level singleton, imported by services/routers.
