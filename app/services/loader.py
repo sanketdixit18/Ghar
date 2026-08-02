@@ -242,14 +242,18 @@ class CityManager:
             return assets.market_df
 
     def warm_up(self) -> None:
-        """Called on app startup: discover cities and eagerly load the
-        cheap/critical prediction assets so the first user request is fast.
-        Heavier optional assets (analytics/market/recommendation) stay lazy."""
-        for slug in self.discover_cities():
-            try:
-                self.load_prediction_assets(slug)
-            except Exception as exc:  # noqa: BLE001
-                logger.error("Startup warm-up failed for %s: %s", slug, exc)
+    """
+    Startup should ONLY discover cities.
+
+    Do not load any dataframe, model or recommendation assets.
+    Everything will be loaded lazily on first request.
+    """
+    self.discover_cities()
+    logger.info(
+        "Discovered %d cities: %s",
+        len(self._configs),
+        ", ".join(self._configs.keys())
+    )
 
 
 # Module-level singleton, imported by services/routers.
