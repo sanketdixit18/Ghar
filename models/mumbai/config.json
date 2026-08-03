@@ -8,7 +8,7 @@
   "tag": "Location-based Model",
   "status": "active",
   "description": "Apartments & independent houses \u2022 Location-wise price prediction \u2022 Area (sq. ft.) driven analysis \u2022 Market insight visualizations",
-  "pipeline_url": "https://github.com/sanketdixit18/Real-estate-app/releases/download/v1.2/pipeline.pkl",
+  "pipeline_url": "https://github.com/sanketdixit18/Real-estate-app/releases/download/v1.2/pipeline.1.pkl",
   "map_center": { "lat": 19.076, "lon": 72.8777 },
   "prediction_inputs": {
     "area": { "type": "number", "label": "Area (sq ft)", "min": 100, "step": 50 },
