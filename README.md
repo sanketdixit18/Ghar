@@ -1,101 +1,178 @@
-# 🏠 Real Estate Price Prediction System — FastAPI Edition
+<div align="center">
 
-A production-ready FastAPI rewrite of the original Streamlit real estate ML
-app. Same models, same preprocessing, same recommendation engine — a new,
-scalable, multi-city web architecture.
+# 🏠 Ghar — Real Estate Price Prediction & Analytics Platform
 
-## ✨ Features
+**An end-to-end, multi-city machine learning web app that predicts property prices, recommends similar listings, and visualizes market trends.**
 
-- **Price Prediction** — instant ML-based price estimates with confidence range
-- **Property Recommendation** — hybrid similarity engine, top-5 similar listings
-- **Market Analytics** — geo price map, word cloud, area-vs-price, BHK analysis, price distribution
-- **Market Trends** — builder/locality insights, RERA & construction-status breakdowns
-- **Dynamic multi-city support** — add a city with zero backend code changes
-- **Modern glassmorphism SaaS UI** — dark/light mode, responsive, animated
+[![Live Demo](https://img.shields.io/badge/Live_Demo-ghar--teal.vercel.app-brightgreen?style=for-the-badge)](https://ghar-teal.vercel.app)
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
+![Pydantic](https://img.shields.io/badge/Pydantic_v2-E92063?style=for-the-badge&logo=pydantic&logoColor=white)
+
+[Live Demo](https://ghar-teal.vercel.app) · [API Docs](#-api-reference) · [Architecture](#%EF%B8%8F-architecture) · [Add a City](#-add-a-new-city-with-zero-code-changes)
+
+</div>
+
+---
+
+## 📌 Overview
+
+Ghar turns raw property data into decisions. Pick a city, enter property details, and get an instant ML-based price estimate with a confidence range. Explore similar listings through a hybrid recommendation engine, and dig into market analytics through interactive dashboards.
+
+The project started as a Streamlit prototype and was **re-engineered into a production-style FastAPI service** with a layered architecture, typed request/response contracts, and a config-driven multi-city design.
+
+> **Why it matters:** Property buyers rely on gut feel and scattered listings. Ghar gives them a data-backed price estimate, comparable properties, and market context in one place.
+
+## ✨ Key Features
+
+| Feature | What it does |
+|---|---|
+| 💰 **Price Prediction** | ML pipeline returns an instant price estimate with a confidence range |
+| 🔍 **Property Recommendation** | Hybrid similarity engine returns the top-5 most similar listings |
+| 📊 **Market Analytics** | Geo price map, word cloud, area-vs-price, BHK analysis, price distribution |
+| 📈 **Market Trends** | Builder and locality insights, RERA and construction-status breakdowns |
+| 🌍 **Multi-City Support** | Add a new city by dropping in config and data files, with no backend changes |
+| 🎨 **Modern UI** | Glassmorphism design, dark/light mode, responsive and animated |
+
+## 🖼️ Screenshots
+
+<!-- TODO: add 3-4 screenshots to /docs and update the paths below -->
+| Price Prediction | Analytics Dashboard |
+|---|---|
+| ![Prediction](docs/prediction.png) | ![Analytics](docs/analytics.png) |
 
 ## 🏗️ Architecture
 
+The app follows a clean, layered design: routers handle HTTP, services hold business logic, and Pydantic models define the contracts.
+
 ```
-real-estate-app/
-├── main.py                    # FastAPI entrypoint
+Ghar/
+├── main.py                     # FastAPI entrypoint
 ├── requirements.txt
-├── render.yaml / Procfile
+├── render.yaml / Procfile      # Deployment config
 ├── app/
 │   ├── config.py
 │   ├── routers/                # home, prediction, recommendation, analytics, market
-│   ├── services/                # loader (CityManager), prediction, recommendation, analytics, market
-│   ├── models/                  # Pydantic v2 request/response models
-│   ├── templates/                # Jinja2 (base, home, dashboard, 404, 500)
+│   ├── services/               # CityManager, prediction, recommendation, analytics, market
+│   ├── models/                 # Pydantic v2 request/response schemas
+│   ├── templates/              # Jinja2 (base, home, dashboard, 404, 500)
 │   ├── static/{css,js}/
 │   └── utils/logging_config.py
-├── models/
-│   ├── gurgaon/  (config.json, df.pkl, recommend_df.pkl, hybrid_similarity.pkl)
-│   └── mumbai/   (config.json, df.pkl)
-└── data/
-    ├── gurgaon/  (analytics.csv, wordcloud.csv, market_trends.csv, recommendation.csv)
-    └── mumbai/   (analytics.csv)
+├── models/                     # Per-city ML artifacts + config.json
+│   ├── gurgaon/
+│   └── mumbai/
+└── data/                       # Per-city analytics datasets
+    ├── gurgaon/
+    └── mumbai/
 ```
 
-## 🌍 Adding a New City (no code changes)
+### Design decisions worth noting
+
+- **Separation of concerns:** routers, services, and schemas are independent, which keeps each layer testable.
+- **Config-driven multi-city engine:** `CityManager` auto-discovers cities from the `models/` folder. Feature flags in each city's `config.json` automatically show or hide UI tabs.
+- **Schema-tolerant analytics:** `AnalyticsService` resolves column names through `COLUMN_ALIASES`, so a new city's CSV doesn't have to match an existing schema.
+- **Lazy model loading:** large pipeline files are downloaded on first prediction and cached in memory for the life of the process, which keeps the repo and cold-start light.
+- **Typed contracts:** Pydantic v2 validates every request and response.
+
+## 🛠️ Tech Stack
+
+- **Backend:** Python, FastAPI, Uvicorn, Pydantic v2
+- **ML / Data:** scikit-learn pipelines, pandas, NumPy
+- **Frontend:** Jinja2 templates, HTML/CSS/JavaScript
+- **Deployment:** Vercel (live demo), Render (blueprint included via `render.yaml`)
+
+## 🌍 Add a New City with Zero Code Changes
 
 1. Create `models/<city-slug>/config.json`:
-   ```json
-   {
-     "city": "Pune",
-     "state": "Maharashtra",
-     "currency": "₹",
-     "unit": "Cr",
-     "theme": "blue",
-     "emoji": "🏙️",
-     "pipeline_url": "https://.../pipeline.pkl",
-     "prediction_inputs": { "...": { "type": "select", "label": "..." } },
-     "features": { "prediction": true, "analytics": false, "recommendation": false, "market_trends": false }
-   }
-   ```
-2. Add `models/<city-slug>/df.pkl` (and `pipeline.pkl`, or set `pipeline_url` to download it on first use).
-3. Optionally add `data/<city-slug>/analytics.csv` (+ `wordcloud.csv`, `market_trends.csv`) for analytics/market features.
-4. Restart the app (or wait for the next request — city discovery re-scans automatically). Done — no router, service, or template edits required.
 
-The `AnalyticsService` resolves column names dynamically (`COLUMN_ALIASES` in
-`app/services/analytics_service.py`), so a new city's CSV doesn't need to
-match Gurgaon's or Mumbai's exact schema.
+```json
+{
+  "city": "Pune",
+  "state": "Maharashtra",
+  "currency": "₹",
+  "unit": "Cr",
+  "theme": "blue",
+  "emoji": "🏙️",
+  "pipeline_url": "https://.../pipeline.pkl",
+  "prediction_inputs": { "...": { "type": "select", "label": "..." } },
+  "features": {
+    "prediction": true,
+    "analytics": false,
+    "recommendation": false,
+    "market_trends": false
+  }
+}
+```
 
-## 🚀 Running locally
+2. Add `models/<city-slug>/df.pkl` (plus `pipeline.pkl`, or set `pipeline_url` to fetch it on first use).
+3. Optionally add `data/<city-slug>/analytics.csv` (and `wordcloud.csv`, `market_trends.csv`).
+4. Restart, or just make the next request. The new city shows up automatically.
+
+## 🚀 Getting Started
 
 ```bash
+# 1. Clone
+git clone https://github.com/sanketdixit18/Ghar.git
+cd Ghar
+
+# 2. Install dependencies
 pip install -r requirements.txt
+
+# 3. Run
 uvicorn main:app --reload
 ```
 
-Visit `http://localhost:8000`. Interactive API docs: `http://localhost:8000/docs`.
+Open **http://localhost:8000**. Interactive API docs are at **http://localhost:8000/docs**.
 
-## ☁️ Deploying to Render
+## 🔌 API Reference
 
-1. Push this repo to GitHub.
-2. In Render, "New +" → "Blueprint" → point at this repo (`render.yaml` is auto-detected), **or** create a Web Service manually with:
-   - Build command: `pip install -r requirements.txt`
-   - Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-3. Set environment variables if needed (`ENVIRONMENT=production`, `LOG_LEVEL=INFO`).
-
-## 🧪 Key API Endpoints
-
-| Method | Path | Purpose |
+| Method | Endpoint | Purpose |
 |---|---|---|
-| GET | `/` | Home page |
-| GET | `/cities` | List discovered cities |
-| GET | `/prediction?city=` | Prediction UI |
-| POST | `/predict` | Run a prediction |
-| GET | `/recommendation?city=` | Recommendation UI |
-| POST | `/recommend` | Get similar properties |
-| GET | `/analytics?city=` | Analytics dashboard |
-| GET | `/sector` \| `/wordcloud` \| `/area-price` \| `/bhk` \| `/property-type` | Analytics chart data |
-| GET | `/market?city=` | Market trends dashboard |
-| GET | `/locality?city=` | Locality explorer (placeholder) |
-| GET | `/health` | Health check |
-| GET | `/docs` | Swagger UI |
+| `GET` | `/` | Home page |
+| `GET` | `/cities` | List discovered cities |
+| `GET` | `/prediction?city=` | Prediction UI |
+| `POST` | `/predict` | Run a price prediction |
+| `GET` | `/recommendation?city=` | Recommendation UI |
+| `POST` | `/recommend` | Get similar properties |
+| `GET` | `/analytics?city=` | Analytics dashboard |
+| `GET` | `/sector` · `/wordcloud` · `/area-price` · `/bhk` · `/property-type` | Chart data endpoints |
+| `GET` | `/market?city=` | Market trends dashboard |
+| `GET` | `/health` | Health check |
+| `GET` | `/docs` | Swagger UI |
 
-## ⚠️ Notes preserved from the original app
+## ☁️ Deployment
 
-- ML models, preprocessing, and the recommendation algorithm are **unchanged** — only the application architecture was migrated.
-- Gurgaon and Mumbai's `pipeline.pkl` are downloaded from a release URL on first prediction request if not already present locally (same lazy-download behavior as the Streamlit version); once downloaded they're cached in memory for the life of the process.
-- Mumbai currently has no recommendation/word cloud/market-trends datasets, matching the source data — those tabs are automatically hidden for Mumbai based on `features` in its `config.json`.
+**Render:** use "New + → Blueprint" and point it at this repo (`render.yaml` is auto-detected), or create a web service manually:
+
+- Build: `pip install -r requirements.txt`
+- Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+
+Optional env vars: `ENVIRONMENT=production`, `LOG_LEVEL=INFO`.
+
+## 📊 Model Performance
+
+<!-- TODO: fill in from your notebooks -->
+| City | Model | R² | MAE |
+|---|---|---|---|
+| Gurgaon | _your model_ | _x.xx_ | _x.xx Cr_ |
+| Mumbai | _your model_ | _x.xx_ | _x.xx Cr_ |
+
+## 🗺️ Roadmap
+
+- [ ] Locality explorer (currently a placeholder)
+- [ ] Recommendation, word cloud, and market-trend data for Mumbai
+- [ ] Add more cities (Pune, Bangalore, Hyderabad)
+- [ ] Unit and API tests with CI via GitHub Actions
+- [ ] Dockerize for one-command deployment
+
+## 👤 Author
+
+**Sanket Dixit** — Computer Engineering student (Data Science & Analytics), open to Data Science / ML / GenAI roles.
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/sanket-dixit-85983a243)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/sanketdixit18)
+
+---
+
+<div align="center">⭐ If you found this useful, consider starring the repo!</div>
